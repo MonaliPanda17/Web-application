@@ -16,9 +16,9 @@ def func():
 def result():
     print("+++++++++++")
     request.method == 'POST'
-    result = request.files['file'] 
+    result = request.files['file']
     path = result.filename
-    result.save(secure_filename(path)) 
+    result.save(secure_filename(path))
     sample_Sheet = SampleSheet(path)
     data = sample_Sheet.to_json()
     data1 = json.loads(data)
