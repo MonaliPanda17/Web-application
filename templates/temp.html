@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js" integrity="sha512-SgWewGM3r8xXm8LNXt4ZHqKVKu/7eKrJ1aBCbMaX44xXXaCcIvCAvD2kj9qnC1lhyjAu04mcPiTzcc/CaACnUQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/jspdf-autotable@3.5.22/dist/jspdf.plugin.autotable.js"></script>
+
+    <script type="text/javascript">
+
+        function changeGene(genes) {
+            for (var index in String(genes)){
+                chr = genes[index]
+                if (chr == 'A'){
+                    chr = "T"
+                } else if (chr == 'T') {
+                    chr = 'A';
+                } else if (chr == 'G') {
+                    chr = 'C';
+                } else if (chr == 'C'){
+                    chr = 'G';
+                }
+
+                var gArray = genes.split("")
+                gArray[index] = chr
+                genes = gArray.join("")
+            }
+            return genes
+        }
+
+   
+        function compliment() {
+            var geneElements = document.getElementsByClassName('index2')  
+            for(var ele of geneElements) {
+                var gene = ele.innerText
+                var reversed = '';
+                for (var i = gene.length - 1; i >= 0; i--) {
+                    reversed += gene[i];
+                }
+                modifiedGene = changeGene(reversed)
+                ele.innerText = modifiedGene
+            }
+        }
+
+        function generatepdf(){
+            var doc = new jsPDF()
+            var element = document.getElementById("table")
+
+            doc.autoTable({
+                html: element
+            });
+            doc.save()
+        }
+        
+    </script>
+</head>
+<body id = "todownload">
+    <h2>Header</h2>
+    <div>
+        <table border = 1>
+        <tr>
+            {% for key,value in headers.items() %}
+            <td> {{ key }} </td>
+            <td> {{ value }} </td>
+         </tr>
+        {% endfor %}
+        </table>
+    </div>
+    <h2>csv file data</h2>
+    <p align="right">
+        <button type = button id = 'index_change' onclick="compliment()">Reverse complement index2</button>
+    </p>
+    <div >
+        <table id="table" border="1" >
+            <thead>
+                <th>
+                    {% for key in keys %}
+                        <td>{{ key }}</td>
+                    {% endfor %}
+                </th>
+            </thead>
+            <tbody id="tbody">
+                {% for item in tabledata %}
+                    <tr>
+                        <td></td>
+                        {% for key in keys %}
+                            <td class="{{ key }}">{{ item[key] }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <button type = button onclick = "generatepdf()" id = 'Download'>Download table</button>
+      
+</body>
+</html>
